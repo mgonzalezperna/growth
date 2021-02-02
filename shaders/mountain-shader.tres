@@ -1,0 +1,133 @@
+[gd_resource type="VisualShader" load_steps=13 format=2]
+
+[sub_resource type="VisualShaderNodeVectorCompose" id=1]
+
+[sub_resource type="VisualShaderNodeVectorOp" id=2]
+output_port_for_preview = 0
+operator = 7
+
+[sub_resource type="VisualShaderNodeVectorDistance" id=3]
+output_port_for_preview = 0
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.5, 0.5, 0 ) ]
+
+[sub_resource type="Gradient" id=4]
+offsets = PoolRealArray( 0, 0.5, 1 )
+colors = PoolColorArray( 0.321569, 0.14902, 0.0117647, 1, 1, 0.537255, 0, 1, 0.321569, 0.14902, 0.0117647, 1 )
+
+[sub_resource type="GradientTexture" id=5]
+gradient = SubResource( 4 )
+width = 64
+
+[sub_resource type="VisualShaderNodeTexture" id=6]
+output_port_for_preview = 0
+texture = SubResource( 5 )
+
+[sub_resource type="VisualShaderNodeVectorOp" id=7]
+output_port_for_preview = 0
+operator = 7
+
+[sub_resource type="VisualShaderNodeScalarOp" id=8]
+output_port_for_preview = 0
+default_input_values = [ 0, 0.0, 1, 1.5 ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeInput" id=9]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeTexture" id=10]
+texture = SubResource( 5 )
+
+[sub_resource type="VisualShaderNodeTexture" id=11]
+output_port_for_preview = 0
+texture = SubResource( 5 )
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id=12]
+
+[resource]
+code = "shader_type canvas_item;
+uniform sampler2D tex_frg_7;
+uniform sampler2D tex_frg_8;
+uniform sampler2D tex_frg_13;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Input:2
+	vec3 n_out2p0 = vec3(UV, 0.0);
+
+// Texture:7
+	vec4 tex_frg_7_read = texture(tex_frg_7, n_out2p0.xy);
+	vec3 n_out7p0 = tex_frg_7_read.rgb;
+	float n_out7p1 = tex_frg_7_read.a;
+
+// VectorDecompose:9
+	float n_out9p0 = n_out2p0.x;
+	float n_out9p1 = n_out2p0.y;
+	float n_out9p2 = n_out2p0.z;
+
+// VectorCompose:10
+	vec3 n_out10p0 = vec3(n_out9p1, n_out9p0, n_out9p2);
+
+// Texture:8
+	vec4 tex_frg_8_read = texture(tex_frg_8, n_out10p0.xy);
+	vec3 n_out8p0 = tex_frg_8_read.rgb;
+	float n_out8p1 = tex_frg_8_read.a;
+
+// VectorOp:11
+	vec3 n_out11p0 = min(n_out7p0, n_out8p0);
+
+// Distance:12
+	vec3 n_in12p1 = vec3(0.50000, 0.50000, 0.00000);
+	float n_out12p0 = distance(n_out2p0, n_in12p1);
+
+// ScalarOp:15
+	float n_in15p1 = 1.50000;
+	float n_out15p0 = n_out12p0 * n_in15p1;
+
+// Texture:13
+	vec4 tex_frg_13_read = texture(tex_frg_13, vec3(n_out15p0).xy);
+	vec3 n_out13p0 = tex_frg_13_read.rgb;
+	float n_out13p1 = tex_frg_13_read.a;
+
+// VectorOp:14
+	vec3 n_out14p0 = min(n_out11p0, n_out13p0);
+
+// Output:0
+	COLOR.rgb = n_out14p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+mode = 1
+flags/light_only = false
+nodes/fragment/0/position = Vector2( 360, 320 )
+nodes/fragment/2/node = SubResource( 9 )
+nodes/fragment/2/position = Vector2( -660, 260 )
+nodes/fragment/7/node = SubResource( 10 )
+nodes/fragment/7/position = Vector2( -120, 100 )
+nodes/fragment/8/node = SubResource( 11 )
+nodes/fragment/8/position = Vector2( -120, 260 )
+nodes/fragment/9/node = SubResource( 12 )
+nodes/fragment/9/position = Vector2( -460, 320 )
+nodes/fragment/10/node = SubResource( 1 )
+nodes/fragment/10/position = Vector2( -280, 320 )
+nodes/fragment/11/node = SubResource( 2 )
+nodes/fragment/11/position = Vector2( 60, 220 )
+nodes/fragment/12/node = SubResource( 3 )
+nodes/fragment/12/position = Vector2( -460, 500 )
+nodes/fragment/13/node = SubResource( 6 )
+nodes/fragment/13/position = Vector2( -120, 500 )
+nodes/fragment/14/node = SubResource( 7 )
+nodes/fragment/14/position = Vector2( 200, 320 )
+nodes/fragment/15/node = SubResource( 8 )
+nodes/fragment/15/position = Vector2( -280, 500 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 9, 0, 7, 0, 11, 0, 8, 0, 11, 1, 9, 2, 10, 2, 10, 0, 8, 0, 2, 0, 7, 0, 9, 0, 10, 1, 9, 1, 10, 0, 2, 0, 12, 0, 13, 0, 14, 1, 11, 0, 14, 0, 12, 0, 15, 0, 15, 0, 13, 0, 14, 0, 0, 0 )
